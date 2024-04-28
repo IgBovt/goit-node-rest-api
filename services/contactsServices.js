@@ -59,4 +59,24 @@ async function addContact(name, email, phone) {
   return newContact;
 }
 
-export default { listContacts, getContactById, removeContact, addContact };
+async function updContact(contactId, newData) {
+  const contacts = await readContacts();
+  const index = contacts.findIndex((contact) => contact.id === contactId);
+
+  if (index === -1) {
+    return null;
+  }
+  const updatedContact = { ...contacts[index], ...newData };
+  contacts[index] = updatedContact;
+
+  writeContact(contacts);
+  return updatedContact;
+}
+
+export default {
+  listContacts,
+  getContactById,
+  removeContact,
+  addContact,
+  updContact,
+};
