@@ -3,7 +3,7 @@ import express from "express";
 import morgan from "morgan";
 import cors from "cors";
 import "./db/db.js";
-
+import { authCheck } from "./middleware/auth.js";
 import contactsRouter from "./routes/contactsRouter.js";
 import authRouter from "./routes/authRouter.js";
 
@@ -13,7 +13,7 @@ app.use(morgan("tiny"));
 app.use(cors());
 app.use(express.json());
 
-app.use("/api/contacts", contactsRouter);
+app.use("/api/contacts", authCheck, contactsRouter);
 app.use("/api/users", authRouter);
 
 app.use((_, res) => {
