@@ -58,7 +58,7 @@ export const login = async (req, res, next) => {
 
     // CREATE TOKEN//
     const token = jwt.sign(
-      { id: user._id, email: user.email },
+      { id: user._id, email: user.email, subscription: user.subscription },
       process.env.JWT_SECRET,
       { expiresIn: 60 * 60 }
     );
@@ -77,6 +77,22 @@ export const logout = async (req, res, next) => {
   try {
     await User.findByIdAndUpdate(req.user.id, { token: null });
     res.status(204).end();
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getCurrent = async (req, res, next) => {
+  const { id } = req.user;
+
+  try {
+    const user = await User.findById(id);
+    if (!user) {
+      res.status(404).send({ message: "Not found" });
+    }
+    res
+      .status(200)
+      .send({ email: user.email, subscription: user.subscription });
   } catch (error) {
     next(error);
   }
