@@ -1,5 +1,8 @@
 import User from "../models/user.js";
-import { createUserSchema } from "../schemas/userSchemas.js";
+import {
+  createUserSchema,
+  updateSubscriptionSchema,
+} from "../schemas/userSchemas.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -93,6 +96,36 @@ export const getCurrent = async (req, res, next) => {
     res
       .status(200)
       .send({ email: user.email, subscription: user.subscription });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateSubscription = async (req, res, next) => {
+  const { id } = req.user;
+  const { subscription } = req.body;
+
+  try {
+    const { error } = updateSubscriptionSchema.validate({
+      subscription,
+    });
+
+    if (error) {
+      return res.status(400).json({ message: error.message });
+    }
+
+    const contact = await User.findById(id);
+    if (!contact) {
+      return res.status(404).send({
+        message: "Not found",
+      });
+    }
+    const result = await User.findByIdAndUpdate(id, req.body);
+    if (!result) {
+      return res.status(404).send({ message: "Not found" });
+    }
+
+    res.status(200).send(result);
   } catch (error) {
     next(error);
   }
