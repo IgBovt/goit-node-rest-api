@@ -42,14 +42,10 @@ export const deleteContact = async (req, res, next) => {
   const { id } = req.params;
 
   try {
-    const contact = await Contact.findOne({ _id: id, owner: req.user.id });
-    if (!contact) {
-      return res.status(404).send({
-        message: "Not found",
-      });
-    }
-
-    const result = await Contact.findByIdAndDelete(id);
+    const result = await Contact.findOneAndDelete({
+      _id: id,
+      owner: req.user.id,
+    });
     if (!result) {
       res.status(404).send({ message: "Not found" });
     }
