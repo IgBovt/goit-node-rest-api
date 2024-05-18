@@ -5,6 +5,7 @@ import {
 } from "../schemas/userSchemas.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import gravatar from "gravatar";
 
 export const register = async (req, res, next) => {
   const { email, password } = req.body;
@@ -25,11 +26,20 @@ export const register = async (req, res, next) => {
     // CREATE USER //
     const passwordHash = await bcrypt.hash(password, 10);
 
+    //CREATE AVATAR URL
+    const avatarURL = gravatar.url(
+      email,
+      { s: "200", r: "x", d: "retro" },
+      false
+    );
     await User.create({
       email,
       password: passwordHash,
+      avatarURL,
     });
-    res.status(201).send({ user: { email, subscription: "starter" } });
+    res
+      .status(201)
+      .send({ user: { email, subscription: "starter", avatarURL } });
   } catch (error) {
     next(error);
   }

@@ -16,7 +16,7 @@ app.use(express.json());
 
 app.use("/api/contacts", authCheck, contactsRouter);
 app.use("/api/users", authRouter);
-app.use("/api/avatar", authCheck, avatarRouter);
+app.use("/api/users/avatars", authCheck, avatarRouter);
 
 app.use((_, res) => {
   res.status(404).json({ message: "Route not found" });
