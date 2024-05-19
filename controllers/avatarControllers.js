@@ -5,10 +5,13 @@ import Jimp from "jimp";
 
 export const addAvatar = async (req, res, next) => {
   try {
-    await fs.rename(
-      req.file.path,
-      path.resolve("public/avatars", req.file.filename)
-    );
+    const avatarPath = path.resolve("public/avatars", req.file.filename);
+
+    await fs.rename(req.file.path, path.resolve(avatarPath));
+
+    const avatar = await Jimp.read(avatarPath);
+    await avatar.resize(250, 250).writeAsync(avatarPath);
+
     const user = await User.findByIdAndUpdate(
       req.user.id,
       {
