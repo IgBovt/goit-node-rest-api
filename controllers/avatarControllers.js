@@ -4,6 +4,9 @@ import path from "node:path";
 import Jimp from "jimp";
 
 export const addAvatar = async (req, res, next) => {
+  if (!req.file) {
+    return res.status(400).send("Please select the avatar file");
+  }
   try {
     const avatarPath = path.resolve("public/avatars", req.file.filename);
 
@@ -15,14 +18,14 @@ export const addAvatar = async (req, res, next) => {
     const user = await User.findByIdAndUpdate(
       req.user.id,
       {
-        avatarURL: req.file.filename,
+        avatarURL: `/avatars/${req.file.filename}`,
       },
       { new: true }
     );
     if (!user) {
       return res.status(404).send({ message: "Not found" });
     }
-    res.send(user);
+    res.status(200).send(user);
   } catch (error) {
     next();
   }
@@ -44,14 +47,14 @@ export const getAvatar = async (req, res, next) => {
   }
 };
 
-export const getAvatarByName = async (req, res, next) => {
-  const { name } = req.params;
-  if (!name) {
-    return res.status(404).send({ message: "Not found" });
-  }
-  try {
-    res.sendFile(path.resolve("public/avatars", name));
-  } catch (error) {
-    next();
-  }
-};
+// export const getAvatarByName = async (req, res, next) => {
+//   const { name } = req.params;
+//   if (!name) {
+//     return res.status(404).send({ message: "Not found" });
+//   }
+//   try {
+//     res.sendFile(path.resolve("public/avatars", name));
+//   } catch (error) {
+//     next();
+//   }
+// };
