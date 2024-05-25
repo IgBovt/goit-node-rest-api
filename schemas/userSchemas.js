@@ -18,3 +18,10 @@ export const updateSubscriptionSchema = Joi.object({
     .valid(...validSubscriptions)
     .required(),
 });
+
+export const emailSchema = Joi.object({
+  email: Joi.string()
+    .required()
+    .email({ minDomainSegments: 2, tlds: { allow: ["com", "net"] } })
+    .lowercase(),
+});
