@@ -44,15 +44,7 @@ export const register = async (req, res, next) => {
     });
 
     // VERIFY EMAIL //
-    sendMail({
-      to: email.toLowerCase(),
-      from: "igbovt@gmail.com",
-      subject: "Welcome to phonebook",
-      html: `<h1 style="color: gray"; margin="12px">Verify your account</h1>
-      <p style="color: gray">Click on link and approve your registration</p>
-      <a href="http://localhost:3000/api/users/verify/${verificationToken}">Approve</a>`,
-      text: `Verify your account.Click on link and approve your registration. Please, copy the link - http://localhost:3000/api/users/verify${verificationToken}`,
-    });
+    sendMail(email, verificationToken);
     // RESPONSE //
     res
       .status(201)
@@ -205,15 +197,7 @@ export const repeatVerification = async (req, res, next) => {
         .send({ message: "Verification has already been passed" });
     }
 
-    sendMail({
-      to: email.toLowerCase(),
-      from: "igbovt@gmail.com",
-      subject: "Welcome to phonebook",
-      html: `<h1 style="color: gray"; margin="12px">Verify your account</h1>
-      <p style="color: gray">Click on link and approve your registration</p>
-      <a href="http://localhost:3000/api/users/verify/${verificationToken}">Approve</a>`,
-      text: `Verify your account.Click on link and approve your registration. Please, copy the link - http://localhost:3000/api/users/verify${verificationToken}`,
-    });
+    sendMail(email, verificationToken);
 
     res.status(200).send({ message: email });
   } catch (error) {

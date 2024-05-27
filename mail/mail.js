@@ -10,6 +10,14 @@ const transport = nodemailer.createTransport({
   },
 });
 
-export const sendMail = (message) => {
-  return transport.sendMail(message);
+export const sendMail = (email, verificationToken) => {
+  return transport.sendMail({
+    to: email.toLowerCase(),
+    from: process.env.MAILTRAP_EMAIL,
+    subject: "Welcome to phonebook",
+    html: `<h1 style="color: gray"; margin="12px">Verify your account</h1>
+      <p style="color: gray">Click on link and approve your registration</p>
+      <a href="${process.env.MAILTRAP_HOST}/api/users/verify/${verificationToken}">Approve</a>`,
+    text: `Verify your account.Click on link and approve your registration. Please, copy the link - http://localhost:3000/api/users/verify${verificationToken}`,
+  });
 };
